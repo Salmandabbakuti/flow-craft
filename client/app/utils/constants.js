@@ -1,0 +1,1 @@
+export const GDAV1_FORWARDER_ADDRESS = "";
