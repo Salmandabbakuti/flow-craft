@@ -88,7 +88,7 @@ export default function Home() {
     try {
       const flowInfo = await contract
         .connect(signer?.provider)
-        .flowInfoByAddress(account);
+        .getFlowInfoByAddress(account);
       console.log("flowInfo: ", flowInfo);
       const parsedFlowInfo =
         flowInfo?.createdAt?.toString() === "0"
@@ -120,8 +120,12 @@ export default function Home() {
 
   useEffect(() => {
     if (account) {
-      getFlowInfoToContract();
+      const intervalId = setInterval(() => {
+        getFlowInfoToContract();
+      }, 10000);
+      return () => clearInterval(intervalId);
     }
+
   }, [account]);
 
   const renderMetadata = () => {
@@ -236,7 +240,7 @@ export default function Home() {
                   title="Total Amount Streamed"
                   value={formatEther(flowInfo?.totalStreamed)}
                   suffix="fDAIx"
-                  precision={6}
+                  precision={2}
                 />
                 <Row>
                   <Col span={8}>
@@ -273,7 +277,7 @@ export default function Home() {
                     flowInfo?.currentFlowRate
                   )}
                   suffix="fDAIx/mo"
-                  precision={6}
+                  precision={2}
                 />
                 <Divider />
                 {renderMetadata()}

@@ -31,8 +31,8 @@ export default function Web3Provider({ children }) {
       autoConnect={true}
       clientId={clientId}
       dAppMeta={{
-        name: "FluidFunds",
-        description: "Realtime Grants Distribution Platform",
+        name: "FlowCraft",
+        description: "Realtime NFT streaming for games",
         logoUrl: "https://example.com/logo.png",
         url: "https://example.com",
         isDarkMode: true
