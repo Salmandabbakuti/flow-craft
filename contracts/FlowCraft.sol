@@ -52,6 +52,24 @@ contract FlowCraft is ERC721, SuperAppBaseFlow {
         require(success, "Update flow to contract failed");
     }
 
+    function getFlowInfoByAddress(
+        address _address
+    ) external view returns (FlowInfo memory) {
+        FlowInfo memory flow = flowInfoByAddress[_address];
+
+        // calculate totalamount streamed since create
+        uint256 realTimeTotalStreamed = flow.totalStreamed;
+        if (flow.currentFlowRate > 0) {
+            uint256 timeElapsed = block.timestamp - flow.lastUpdated;
+            realTimeTotalStreamed +=
+                uint256(int256(flow.currentFlowRate)) *
+                timeElapsed;
+            flow.totalStreamed = realTimeTotalStreamed;
+        }
+
+        return flow;
+    }
+
     /// @notice Get the URI for a token
     /// @param tokenId The ID of the token
     /// @dev This function will return the token URI in JSON based on the flow opened by the token owner. Overrides ERC721 tokenURI function
