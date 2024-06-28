@@ -1,26 +1,19 @@
 {
-  "name": "fluid-funds",
-  "version": "0.1.0",
+  "name": "hardhat-boilerplate-minimal",
+  "version": "1.2.3",
+  "description": "Minimal hardhat boilerplate for dapp development",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat deploy"
   },
-  "dependencies": {
-    "@ant-design/icons": "^5.3.7",
-    "@ethersproject/contracts": "^5.7.0",
-    "@ethersproject/units": "^5.7.0",
-    "@thirdweb-dev/chains": "^0.1.120",
-    "@thirdweb-dev/react": "^4.9.4",
-    "antd": "^5.18.3",
-    "next": "14.2.4",
-    "react": "^18",
-    "react-dom": "^18"
-  },
+  "keywords": [],
+  "author": "Salman Dabbakuti",
+  "license": "ISC",
   "devDependencies": {
-    "eslint": "^8",
-    "eslint-config-next": "14.2.4"
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "hardhat": "^2.22.3"
   }
 }
