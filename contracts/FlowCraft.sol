@@ -91,7 +91,7 @@ contract FlowCraft is ERC721, SuperAppBaseFlow {
             '",',
             '"attributes": [',
             '{"trait_type": "Power", "value": ',
-            flow.totalStreamed.toString(),
+            realTimeTotalStreamed.toString(),
             "},",
             '{"trait_type": "Speed", "value": ',
             uint256(int256(flow.currentFlowRate)).toString(),
@@ -192,6 +192,7 @@ contract FlowCraft is ERC721, SuperAppBaseFlow {
 
         (, int96 flowRate, , ) = superToken.getFlowInfo(sender, address(this));
         flow.currentFlowRate = flowRate;
+        flow.createdAt = block.timestamp;
         flow.lastUpdated = block.timestamp;
 
         return ctx;
