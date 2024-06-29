@@ -8,7 +8,7 @@ import {
   rainbowWallet,
   trustWallet
 } from "@thirdweb-dev/react";
-import { Scroll, ScrollSepoliaTestnet } from "@thirdweb-dev/chains";
+import { OpSepoliaTestnet } from "@thirdweb-dev/chains";
 
 const supportedWallets = [
   metamaskWallet({ recommended: true }),
@@ -25,14 +25,14 @@ export default function Web3Provider({ children }) {
 
   return (
     <ThirdwebProvider
-      activeChain={ScrollSepoliaTestnet}
-      supportedChains={[ScrollSepoliaTestnet, Scroll]}
+      activeChain={OpSepoliaTestnet}
+      supportedChains={[OpSepoliaTestnet]}
       supportedWallets={supportedWallets}
       autoConnect={true}
       clientId={clientId}
       dAppMeta={{
-        name: "FluidFunds",
-        description: "Realtime Grants Distribution Platform",
+        name: "FlowCraft",
+        description: "Realtime NFT streaming for games",
         logoUrl: "https://example.com/logo.png",
         url: "https://example.com",
         isDarkMode: true

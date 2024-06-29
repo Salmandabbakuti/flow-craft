@@ -32,7 +32,7 @@ export default function SiteLayout({ children }) {
               fontWeight: "bold"
             }}
           >
-            🔗 FluidFunds
+            🔗 FlowCraft
           </h3>
         </Link>
         <div style={{ display: "flex", alignItems: "center" }}>

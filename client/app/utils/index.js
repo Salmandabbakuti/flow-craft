@@ -1,23 +1,29 @@
 import { Contract } from "@ethersproject/contracts";
-import { GDAV1_FORWARDER_ADDRESS } from "./constants";
+import { formatEther, parseEther } from "@ethersproject/units";
+import { FLOWCRAFT_ADDRESS } from "./constants";
 
-const GDAV1_FORWARDER_ABI = [
-  "constructor(address host)",
-  "function claimAll(address pool, address memberAddress, bytes userData) returns (bool success)",
-  "function connectPool(address pool, bytes userData) returns (bool)",
-  "function createPool(address token, address admin, tuple(bool transferabilityForUnitsOwner, bool distributionFromAnyAddress) config) returns (bool success, address pool)",
-  "function disconnectPool(address pool, bytes userData) returns (bool)",
-  "function distribute(address token, address from, address pool, uint256 requestedAmount, bytes userData) returns (bool)",
-  "function distributeFlow(address token, address from, address pool, int96 requestedFlowRate, bytes userData) returns (bool)",
-  "function estimateDistributionActualAmount(address token, address from, address to, uint256 requestedAmount) view returns (uint256 actualAmount)",
-  "function estimateFlowDistributionActualFlowRate(address token, address from, address to, int96 requestedFlowRate) view returns (int96 actualFlowRate, int96 totalDistributionFlowRate)",
-  "function getFlowDistributionFlowRate(address token, address from, address to) view returns (int96)",
-  "function getNetFlow(address token, address account) view returns (int96)",
-  "function getPoolAdjustmentFlowInfo(address pool) view returns (address, bytes32, int96)",
-  "function getPoolAdjustmentFlowRate(address pool) view returns (int96)",
-  "function isMemberConnected(address pool, address member) view returns (bool)",
-  "function isPool(address token, address account) view returns (bool)",
-  "function updateMemberUnits(address pool, address memberAddress, uint128 newUnits, bytes userData) returns (bool success)"
+const FLOWCRAFT_ABI = [
+  "function createFlowToContract(int96 _flowRate)",
+  "function deleteFlowToContract()",
+  "function updateFlowToContract(int96 _flowRate)",
+  "function getFlowInfoByAddress(address) view returns (int96 currentFlowRate, uint256 totalStreamed, uint256 createdAt, uint256 lastUpdated, uint256 tokenId)",
+  "function tokenURI(uint256) view returns (string)",
 ];
 
-export const gdav1ForwarderContract = new Contract(GDAV1_FORWARDER_ADDRESS, GDAV1_FORWARDER_ABI);
+export const flowCraftContract = new Contract(FLOWCRAFT_ADDRESS, FLOWCRAFT_ABI);
+
+export const calculateFlowRateInTokenPerMonth = (amount) => {
+  if (isNaN(amount)) return 0;
+  // convert from wei/sec to token/month for displaying in UI
+  // 2628000 = 1 month in seconds(sf recommendation)
+  const flowRate = Math.round(formatEther(amount) * 2628000).toFixed(2);
+  return flowRate;
+};
+
+export const calculateFlowRateInWeiPerSecond = (amount) => {
+  // convert amount from token/month to wei/second for sending to superfluid
+  const flowRateInWeiPerSecond = parseEther(amount.toString())
+    .div(2628000)
+    .toString();
+  return flowRateInWeiPerSecond;
+};
