@@ -27,9 +27,11 @@ import {
 } from "@ant-design/icons";
 import {
   flowCraftContract as contract,
+  cfav1ForwarderContract,
   calculateFlowRateInTokenPerMonth,
   calculateFlowRateInWeiPerSecond
 } from "./utils";
+import { SUPPORTED_SUPERTOKEN_ADDRESS, FLOWCRAFT_ADDRESS } from "./utils/constants";
 
 dayjs.extend(relativeTime);
 
@@ -50,7 +52,12 @@ export default function Home() {
       return message.error("Please connect wallet first");
     if (!flowInfo) return message.error("No flow found open to contract");
     try {
-      const tx = await contract.connect(signer).deleteFlowToContract();
+      const tx = await cfav1ForwarderContract.connect(signer).deleteFlow(
+        SUPPORTED_SUPERTOKEN_ADDRESS,
+        account,
+        FLOWCRAFT_ADDRESS,
+        "0x"
+      );
       await tx.wait();
       message.success("Flow deleted successfully");
     } catch (err) {
@@ -64,22 +71,51 @@ export default function Home() {
       return message.error("Please connect wallet first");
     if (!flowRateInput) return message.error("Please enter flow rate");
     try {
-      setLoading({ mintItem: true });
       const flowRateInWeiPerSecond =
         calculateFlowRateInWeiPerSecond(flowRateInput);
       console.log("flowRateInWeiPerSecond: ", flowRateInWeiPerSecond);
-      const tx = await contract
+      const tx = await cfav1ForwarderContract
         .connect(signer)
-        .createFlowToContract(flowRateInWeiPerSecond);
+        .createFlow(
+          SUPPORTED_SUPERTOKEN_ADDRESS,
+          account,
+          FLOWCRAFT_ADDRESS,
+          flowRateInWeiPerSecond,
+          "0x"
+        );
       await tx.wait();
       message.success("Flow opened to contract successfully");
-      setLoading({ mintItem: false });
     } catch (err) {
-      setLoading({ mintItem: false });
       message.error("Failed to open flow to contract");
       console.error("failed to open flow to contract: ", err);
     }
   };
+
+  const handleUpdateFlowToContract = async () => {
+    if (!account || !signer)
+      return message.error("Please connect wallet first");
+    if (!flowRateInput) return message.error("Please enter flow rate");
+    try {
+      const flowRateInWeiPerSecond =
+        calculateFlowRateInWeiPerSecond(flowRateInput);
+      console.log("flowRateInWeiPerSecond: ", flowRateInWeiPerSecond);
+      const tx = await cfav1ForwarderContract
+        .connect(signer)
+        .updateFlow(
+          SUPPORTED_SUPERTOKEN_ADDRESS,
+          account,
+          FLOWCRAFT_ADDRESS,
+          flowRateInWeiPerSecond,
+          "0x"
+        );
+      await tx.wait();
+      message.success("Flow updated to contract successfully");
+    } catch (err) {
+      message.error("Failed to update flow to contract");
+      console.error("failed to update flow to contract: ", err);
+    }
+  };
+
 
   const getFlowInfoToContract = async () => {
     if (!account || !signer)
@@ -181,7 +217,7 @@ export default function Home() {
                 {
                   // if flowInfo is not null, show the buttons(edit,delete)
                   // else show the button to open a new stream
-                  flowInfo ? (
+                  flowInfo?.currentFlowRate > 0 ? (
                     <>
                       <Popconfirm
                         title="Enter FlowRate"
@@ -193,7 +229,7 @@ export default function Home() {
                             addonAfter="fDAIx/mo"
                           />
                         }
-                        onConfirm={handleCreateFlowToContract}
+                        onConfirm={handleUpdateFlowToContract}
                       >
                         <Button
                           type="primary"
@@ -233,7 +269,7 @@ export default function Home() {
               </Space>
             }
           >
-            {flowInfo ? (
+            {flowInfo?.currentFlowRate > 0 ? (
               <>
                 <Statistic
                   style={{ textAlign: "center", marginBottom: 20 }}

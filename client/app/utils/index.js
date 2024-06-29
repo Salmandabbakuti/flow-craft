@@ -1,6 +1,6 @@
 import { Contract } from "@ethersproject/contracts";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { FLOWCRAFT_ADDRESS } from "./constants";
+import { FLOWCRAFT_ADDRESS, CFAV1_FORWARDER_ADDRESS } from "./constants";
 
 const FLOWCRAFT_ABI = [
   "function createFlowToContract(int96 _flowRate)",
@@ -11,6 +11,17 @@ const FLOWCRAFT_ABI = [
 ];
 
 export const flowCraftContract = new Contract(FLOWCRAFT_ADDRESS, FLOWCRAFT_ABI);
+
+const cfav1ForwarderABI = [
+  "function createFlow(address token, address sender, address receiver, int96 flowrate, bytes userData) returns (bool)",
+  "function updateFlow(address token, address sender, address receiver, int96 flowrate, bytes userData) returns (bool)",
+  "function deleteFlow(address token, address sender, address receiver, bytes userData) returns (bool)"
+];
+// load contracts
+export const cfav1ForwarderContract = new Contract(
+  CFAV1_FORWARDER_ADDRESS,
+  cfav1ForwarderABI
+);
 
 export const calculateFlowRateInTokenPerMonth = (amount) => {
   if (isNaN(amount)) return 0;
