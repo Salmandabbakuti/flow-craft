@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSigner, useAddress } from "@thirdweb-dev/react";
-import { formatUnits, formatEther } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
@@ -31,15 +31,17 @@ import {
   calculateFlowRateInTokenPerMonth,
   calculateFlowRateInWeiPerSecond
 } from "./utils";
-import { SUPPORTED_SUPERTOKEN_ADDRESS, FLOWCRAFT_ADDRESS } from "./utils/constants";
+import {
+  SUPPORTED_SUPERTOKEN_ADDRESS,
+  FLOWCRAFT_ADDRESS
+} from "./utils/constants";
 
 dayjs.extend(relativeTime);
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export default function Home() {
   const [dataLoading, setDataLoading] = useState(false);
-  const [loading, setLoading] = useState({ connect: false });
   const [flowInfo, setFlowInfo] = useState(null);
   const [tokenMetadata, setTokenMetadata] = useState(null);
   const [flowRateInput, setFlowRateInput] = useState(0);
@@ -52,12 +54,14 @@ export default function Home() {
       return message.error("Please connect wallet first");
     if (!flowInfo) return message.error("No flow found open to contract");
     try {
-      const tx = await cfav1ForwarderContract.connect(signer).deleteFlow(
-        SUPPORTED_SUPERTOKEN_ADDRESS,
-        account,
-        FLOWCRAFT_ADDRESS,
-        "0x"
-      );
+      const tx = await cfav1ForwarderContract
+        .connect(signer)
+        .deleteFlow(
+          SUPPORTED_SUPERTOKEN_ADDRESS,
+          account,
+          FLOWCRAFT_ADDRESS,
+          "0x"
+        );
       await tx.wait();
       message.success("Flow deleted successfully");
     } catch (err) {
@@ -116,7 +120,6 @@ export default function Home() {
     }
   };
 
-
   const getFlowInfoToContract = async () => {
     if (!account || !signer)
       return message.error("Please connect wallet first");
@@ -130,12 +133,12 @@ export default function Home() {
         flowInfo?.createdAt?.toString() === "0"
           ? null
           : {
-            currentFlowRate: flowInfo?.currentFlowRate?.toString(),
-            totalStreamed: flowInfo?.totalStreamed?.toString(),
-            createdAt: flowInfo?.createdAt?.toString(),
-            lastUpdated: flowInfo?.lastUpdated?.toString(),
-            tokenId: flowInfo?.tokenId?.toString()
-          };
+              currentFlowRate: flowInfo?.currentFlowRate?.toString(),
+              totalStreamed: flowInfo?.totalStreamed?.toString(),
+              createdAt: flowInfo?.createdAt?.toString(),
+              lastUpdated: flowInfo?.lastUpdated?.toString(),
+              tokenId: flowInfo?.tokenId?.toString()
+            };
       if (parsedFlowInfo?.tokenId) {
         // get token metadata
         const uri = await contract
@@ -161,7 +164,6 @@ export default function Home() {
       }, 10000);
       return () => clearInterval(intervalId);
     }
-
   }, [account]);
 
   const renderMetadata = () => {
@@ -282,9 +284,7 @@ export default function Home() {
                   <Col span={8}>
                     <Statistic
                       title="Sender (You)"
-                      value={
-                        account?.slice(0, 6) + "..." + account?.slice(-4)
-                      }
+                      value={account?.slice(0, 6) + "..." + account?.slice(-4)}
                     />
                   </Col>
                   <Col span={8} style={{ textAlign: "center" }}>
@@ -319,7 +319,6 @@ export default function Home() {
                 {renderMetadata()}
               </>
             ) : (
-
               <Empty
                 description="No flow found. Open a flow to contract and
                               unlock your super powers"

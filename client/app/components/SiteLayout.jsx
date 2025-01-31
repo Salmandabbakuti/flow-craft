@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useState } from "react";
 import { Divider, Layout } from "antd";
 import { ConnectWallet } from "@thirdweb-dev/react";
 import Link from "next/link";
